@@ -22,8 +22,8 @@ struct Packet {
 
 class TrafficMonitor {
 public:
-    static bool IsWireless(const std::string& adapterName);
-    static boost::asio::ip::address GetServerIPAddress();
+    static bool isWireless(const std::string& adapterName);
+    static boost::asio::ip::address getServerIPAddress();
     void makeUdpClient() {
         if (p_async_udp_client == nullptr) {
             p_async_udp_client = 
