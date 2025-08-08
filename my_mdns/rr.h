@@ -39,7 +39,7 @@ public:
 
 
     // 写入到RecordWriter
-    void Write(RecordWriter& rw) const {
+    void Write(RecordWriter& rw) {
         rw.writeDomainNameCompressed(name_);
         rw.writeUInt16(static_cast<uint16_t>(type_));
         rw.writeUInt16(static_cast<uint16_t>(rrclass_));
@@ -48,16 +48,16 @@ public:
     }
 
     // 字符串表示
-    std::string ToString() const {
+    std::string toString() const {
         char buf[256];
         snprintf(buf, sizeof(buf), "name=[%s] TTL=%u class=%d type=%d record=[%s]",
-            NAME.c_str(), TTL(), static_cast<int>(rrclass), static_cast<int>(type),
-            RECORD ? RECORD->ToString().c_str() : "null");
+            name_.c_str(), m_TTL_, static_cast<int>(rrclass_), static_cast<int>(type_),
+            record_ ? record_->toString().c_str() : "null");
         return std::string(buf);
     }
 
     // 析构函数
     ~RR() {
-        delete RECORD;
+        delete record_;
     }
 };

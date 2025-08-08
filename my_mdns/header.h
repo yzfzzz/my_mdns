@@ -1,6 +1,6 @@
 ﻿#pragma once
 #include "record_reader.h"
-#include "record_wirter.h"
+#include "record_writer.h"
 #include "struct.h"
 class Header {
 public:

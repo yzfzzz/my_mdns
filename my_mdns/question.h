@@ -4,7 +4,7 @@
 #include <string>
 #include "struct.h"      // QType, QClass 枚举定义
 #include "record_reader.h" // 需实现
-#include "record_wirter.h" // 需实现
+#include "record_writer.h" // 需实现
 
 class Question {
 public:

@@ -112,6 +112,28 @@ public:
         buffer.push_back(static_cast<uint8_t>(len));
         buffer.insert(buffer.end(), s.begin(), s.end());
     }
+
+    void writeRecord(Record* rec) {
+        size_t front = buffer.size();
+
+        // 预留2个字节用于长度字段
+        buffer.push_back(0);
+        buffer.push_back(0);
+
+        // 写入记录数据
+        rec->write(*this);
+
+        // 计算记录长度
+        size_t length = buffer.size() - front - 2;
+        if (length > 0xffff) {
+            throw std::invalid_argument("Record is too long: " + std::to_string(length) + " bytes");
+        }
+
+        // 填充长度字段（大端序）
+        buffer[front] = static_cast<uint8_t>(length >> 8);
+        buffer[front + 1] = static_cast<uint8_t>(length);
+
+    }
 private:
     std::vector<uint8_t> buffer;
 };
