@@ -7,7 +7,9 @@
 #include <ws2tcpip.h>
 #include <thread>
 #include <queue>
+#include "message.h"
 #include "async_udp_client.h"
+#include "record_writer.h"
 
 #pragma comment(lib, "iphlpapi.lib")
 #pragma comment(lib, "ws2_32.lib")
@@ -31,6 +33,15 @@ public:
         }
     }
     void start();
+    void broadcast(Message message)
+    {
+        RecordWriter writer;
+        message.Write(writer);
+        std::vector<uint8_t> datagram = writer.toArray();
+        std::string broadcast_datagram(datagram.begin(), datagram.end());
+        broadcast(broadcast_datagram);
+    }
+
     void broadcast(std::string datagram);
     boost::asio::io_context io_context;
     std::shared_ptr<AsyncUdpClient> p_async_udp_client;
