@@ -13,10 +13,10 @@
 class Message {
 public:
     Header header;
-    std::vector<std::shared_ptr<Question>> Questions;
-    std::vector<std::shared_ptr<RR>> Answers;
-    std::vector<std::shared_ptr<RR>> Authorities;
-    std::vector<std::shared_ptr<RR>> Additionals;
+    std::vector<std::shared_ptr<Question>> questions_;
+    std::vector<std::shared_ptr<RR>> answers_;
+    std::vector<std::shared_ptr<RR>> authorities_;
+    std::vector<std::shared_ptr<RR>> additionals_;
     std::chrono::system_clock::time_point TimeStamp;
 
     // 默认构造函数
@@ -28,60 +28,60 @@ public:
     Message(const std::vector<uint8_t>& data, bool enableSecurityExtensions)
         : TimeStamp(std::chrono::system_clock::now()) {
 
-        RecordReader rr(data, enableSecurityExtensions);
+        RecordReader rr(data);
 
         // 解析头部
         header = Header(rr);
 
         // 解析问题部分
         for (int i = 0; i < header.QDCOUNT; i++) {
-            Questions.push_back(std::make_shared<Question>(rr));
+            questions_.push_back(std::make_shared<Question>(rr));
         }
 
         // 解析回答部分
         for (int i = 0; i < header.ANCOUNT; i++) {
-            Answers.push_back(std::make_shared<RR>(rr));
+            answers_.push_back(std::make_shared<RR>(rr));
         }
 
         // 解析授权部分
         for (int i = 0; i < header.NSCOUNT; i++) {
-            Authorities.push_back(std::make_shared<RR>(rr));
+            authorities_.push_back(std::make_shared<RR>(rr));
         }
 
         // 解析附加部分
         for (int i = 0; i < header.ARCOUNT; i++) {
-            Additionals.push_back(std::make_shared<RR>(rr));
+            additionals_.push_back(std::make_shared<RR>(rr));
         }
     }
 
     // 写入函数
     void Write(RecordWriter& rw) {
         // 更新头部计数
-        header.QDCOUNT = CheckUInt16(static_cast<int>(Questions.size()));
-        header.ANCOUNT = CheckUInt16(static_cast<int>(Answers.size()));
-        header.NSCOUNT = CheckUInt16(static_cast<int>(Authorities.size()));
-        header.ARCOUNT = CheckUInt16(static_cast<int>(Additionals.size()));
+        header.QDCOUNT = CheckUInt16(static_cast<int>(questions_.size()));
+        header.ANCOUNT = CheckUInt16(static_cast<int>(answers_.size()));
+        header.NSCOUNT = CheckUInt16(static_cast<int>(authorities_.size()));
+        header.ARCOUNT = CheckUInt16(static_cast<int>(additionals_.size()));
 
         // 写入头部
-        header.Write(rw);
+        header.write(rw);
 
         // 写入问题部分
-        for (const auto& q : Questions) {
-            q->Write(rw);
+        for (const auto& q : questions_) {
+            q->write(rw);
         }
 
         // 写入回答部分
-        for (const auto& a : Answers) {
+        for (const auto& a : answers_) {
             a->Write(rw);
         }
 
         // 写入授权部分
-        for (const auto& a : Authorities) {
+        for (const auto& a : authorities_) {
             a->Write(rw);
         }
 
         // 写入附加部分
-        for (const auto& a : Additionals) {
+        for (const auto& a : additionals_) {
             a->Write(rw);
         }
     }

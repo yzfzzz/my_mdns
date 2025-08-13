@@ -11,6 +11,8 @@ public:
 	unsigned short NSCOUNT;
 	unsigned short ARCOUNT;
 
+	Header(){}
+
 	Header(RecordReader rr) {
 		ID = rr.readUInt16();
 		Flags = rr.readUInt16();

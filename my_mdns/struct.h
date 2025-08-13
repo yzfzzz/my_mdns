@@ -137,7 +137,7 @@ enum class QType : uint16_t {
 };
 
 enum class DnsClass : uint16_t {
-    IN = 1,   // Internet
+    QIN = 1,   // Internet
     CS = 2,   // CSNET
     CH = 3,   // CHAOS
     HS = 4    // Hesiod
@@ -145,10 +145,10 @@ enum class DnsClass : uint16_t {
 
 
 enum class QClass : uint16_t {
-    IN = static_cast<uint16_t>(DnsClass::IN),
-    CS = static_cast<uint16_t>(DnsClass::CS),
-    CH = static_cast<uint16_t>(DnsClass::CH),
-    HS = static_cast<uint16_t>(DnsClass::HS),
+    QIN = 1,
+    CS = 2,
+    CH = 3,
+    HS = 4,
     ANY = 255
 };
 
